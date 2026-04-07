@@ -1,4 +1,11 @@
+<p align="center">
+  <img src="vibe-hub-mac/VibeHubApp/Assets/vibe-hub-logo.png" alt="Vibe Hub logo" width="180">
+</p>
+
 # Vibe Hub
+
+**One sentence description**  
+用户仅需语音输入，模型自动将其整理为结构化 Prompt，自主分发至本机内所有 AI 软件（包括 OpenClaw、Codex、AntiGravity、Claude、Cline、VS Code 等），该软件作为 Mac 上 Vibe Coding 的语音中枢，实现本地所有开发工具的一站式处理。
 
 **English**  
 Vibe Hub is a lightweight macOS communication hub for capturing raw input, refining it into sendable content, and routing it to the right destination.
@@ -165,6 +172,8 @@ If needed, you may use another AI tool locally to help generate the config, but 
 **English**
 
 - Voice input requires Microphone and Speech Recognition permissions
+- Apple Speech may perform poorly on mixed Chinese-English dictation. If you need better mixed-language recognition, prefer `SenseVoice ONNX` as the secondary voice option.
+- `SenseVoice ONNX` requires a local model download before it can run.
 - Some targets require local integrations or app permissions
 - Public builds are currently intended for direct distribution and testing
 - Keep secrets local. Do not commit `.vibe-hub/`, `.env`, API keys, memory files, or personal runtime logs.
@@ -174,6 +183,8 @@ If needed, you may use another AI tool locally to help generate the config, but 
 **中文**
 
 - 语音输入需要麦克风和语音识别权限
+- 苹果自带语音识别在中英文混合识别上存在问题。如果你需要更好的中英混合识别，建议优先使用第二个语音方案：`SenseVoice ONNX`。
+- `SenseVoice ONNX` 需要用户先在本地下载模型后才能运行。
 - 某些发送目标需要本地集成或系统权限
 - 当前公开构建更适合直接分发和测试使用
 - 所有密钥都应只保留在本地。不要提交 `.vibe-hub/`、`.env`、API key、记忆文件或个人运行日志。
