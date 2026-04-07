@@ -1,0 +1,11 @@
+{
+  "provider": "openai",
+  "baseURL": "https://api.openai.com/v1",
+  "apiKeyEnvVar": "VIBE_HUB_LLM_API_KEY",
+  "apiKey": "",
+  "modelRewrite": "gpt-5.4",
+  "modelCompress": "gpt-5.4-mini",
+  "modelRoute": "gpt-5.4-mini",
+  "temperature": 0.2,
+  "maxOutputTokens": 4000
+}

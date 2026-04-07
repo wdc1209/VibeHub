@@ -114,6 +114,52 @@ See [SECURITY.md](/Users/nethon/.openclaw/workspace-main/vibe-hub/SECURITY.md) f
 3. 将 `VibeHub.app` 拖入 `Applications`
 4. 从“应用程序”或启动台打开
 
+## Local Configuration / 本地配置
+
+**English**
+
+Users may need to configure a few local-only items:
+
+- `Microphone` permission
+- `Speech Recognition` permission
+- optional `.env` file for local bridge settings and cloud LLM keys
+- optional local `.vibe-hub/llm.json` for provider / model selection
+
+Templates:
+
+- [.env.example](/Users/nethon/.openclaw/workspace-main/vibe-hub/.env.example)
+- [examples/llm.example.json](/Users/nethon/.openclaw/workspace-main/vibe-hub/examples/llm.example.json)
+
+Recommended flow:
+
+1. Copy `.env.example` to `.env` for local use only
+2. Copy `examples/llm.example.json` to `.vibe-hub/llm.json`
+3. Fill in your own local API key if you want cloud LLM features
+
+If needed, you may use another AI tool locally to help generate the config, but keep the real key only on your own machine.
+
+**中文**
+
+用户可能需要自行配置以下本地项：
+
+- `麦克风` 权限
+- `语音识别` 权限
+- 可选的 `.env` 文件，用于本地 bridge 设置和云端 LLM key
+- 可选的本地 `.vibe-hub/llm.json`，用于 provider / model 配置
+
+模板文件：
+
+- [.env.example](/Users/nethon/.openclaw/workspace-main/vibe-hub/.env.example)
+- [examples/llm.example.json](/Users/nethon/.openclaw/workspace-main/vibe-hub/examples/llm.example.json)
+
+推荐流程：
+
+1. 将 `.env.example` 复制为 `.env`，仅供本地使用
+2. 将 `examples/llm.example.json` 复制为 `.vibe-hub/llm.json`
+3. 如果需要云端 LLM 功能，再填入你自己的本地 API key
+
+如有需要，也可以让其他 AI 工具在本地帮你生成配置，但真实 key 只应保留在你自己的机器上。
+
 ## Notes / 说明
 
 **English**

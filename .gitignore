@@ -4,6 +4,7 @@ node_modules/
 .vibe-hub/
 .env
 .env.*
+!.env.example
 
 vibe-hub-mac/.build/
 vibe-hub-mac/dist/
