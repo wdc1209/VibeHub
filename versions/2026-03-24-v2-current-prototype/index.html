@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vibe Hub</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="desktop-stage">
+      <div class="wallpaper-overlay"></div>
+      <div class="desktop-decor decor-left"></div>
+      <div class="desktop-decor decor-right"></div>
+      <div class="desktop-dock"></div>
+
+      <section class="floating-shell">
+        <article id="tokenCard" class="vibe-hub glass-card shape-envelope" data-shape="envelope">
+          <div id="dragHandle" class="card-drag-handle">
+            <div class="drag-meta-row">
+              <div class="card-title-row">
+                <p class="mini-label">Vibe Hub</p>
+                <div class="target-inline-wrap">
+                  <span class="field-label inline-label">发送给</span>
+                  <select id="targetSelect" class="select-chip"></select>
+                </div>
+              </div>
+              <div class="topbar-actions">
+                <span id="cardStatus" class="status-pill">待发送</span>
+                <button id="stackToggleBtn" class="ghost-button small-button">Token Stack</button>
+              </div>
+            </div>
+
+            <div class="shape-switcher" aria-label="外形切换">
+              <button class="shape-chip active" data-shape="envelope">透明信封</button>
+              <button class="shape-chip" data-shape="bubble">透明对话气泡</button>
+              <button class="shape-chip" data-shape="token">切角 Token 牌</button>
+            </div>
+
+            <div class="drag-hint-row">
+              <span class="drag-grip" aria-hidden="true"></span>
+              <span class="drag-hint">拖动卡片，测试不同桌面位置下的毛玻璃与漂浮观感</span>
+            </div>
+          </div>
+
+          <section class="editor-panel">
+            <div class="editor-head">
+              <span class="field-label">整理后的内容</span>
+              <div class="editor-head-right">
+                <span id="bodyStats" class="editor-stats">0 字</span>
+                <span id="feedbackBadge" class="feedback-badge hidden"></span>
+              </div>
+            </div>
+            <textarea id="cardBody" class="body-textarea"></textarea>
+          </section>
+
+          <details class="raw-panel">
+            <summary>查看原始输入</summary>
+            <textarea id="rawInput" class="raw-textarea"></textarea>
+          </details>
+
+          <div class="card-actions">
+            <button id="rewriteBtn" class="ghost-button">重写</button>
+            <button id="shortenBtn" class="ghost-button">压缩</button>
+            <button id="cancelBtn" class="ghost-button danger-soft">取消</button>
+            <button id="sendBtn" class="primary-button">发送</button>
+          </div>
+        </article>
+      </section>
+
+      <aside id="stackDrawer" class="stack-drawer hidden">
+        <div class="drawer-head">
+          <div>
+            <p class="mini-label">Token Stack</p>
+            <h2>已发送卡片</h2>
+          </div>
+          <div class="drawer-head-actions">
+            <span id="stackCount" class="stack-count">0 张</span>
+            <button id="closeStackBtn" class="ghost-button small-button">关闭</button>
+          </div>
+        </div>
+
+        <div id="stackList" class="stack-list"></div>
+
+        <div id="detailEmpty" class="stack-empty">点击任意一张已发送卡片，查看它当时发给谁、发了什么。</div>
+
+        <div id="detailContent" class="stack-detail hidden">
+          <div class="detail-meta-row">
+            <div class="detail-meta-box">
+              <span class="field-label">发送给</span>
+              <strong id="detailTarget"></strong>
+            </div>
+            <div class="detail-meta-box">
+              <span class="field-label">发送时间</span>
+              <strong id="detailTime"></strong>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <span class="field-label">摘要</span>
+            <p id="detailSummary" class="detail-summary"></p>
+          </div>
+
+          <div class="detail-section">
+            <span class="field-label">卡片正文</span>
+            <pre id="detailBody" class="detail-pre"></pre>
+          </div>
+
+          <div class="detail-actions">
+            <button id="detailResendBtn" class="ghost-button">再次发送</button>
+            <button id="detailEditResendBtn" class="ghost-button">编辑后发送</button>
+            <button id="detailSendAnotherBtn" class="primary-button alt">转发给其他目标</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

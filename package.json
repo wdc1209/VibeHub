@@ -1,0 +1,16 @@
+{
+  "name": "vibe-hub-bridge",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "bin": {
+    "vibe-hub": "./bridge/src/cli.js"
+  },
+  "scripts": {
+    "bridge:start": "node ./bridge/src/server.js",
+    "bridge:doctor": "node ./bridge/src/cli.js doctor",
+    "bridge:install": "node ./bridge/src/cli.js install",
+    "bridge:status": "node ./bridge/src/cli.js status",
+    "bridge:route-check": "node ./bridge/src/route-check.js"
+  }
+}

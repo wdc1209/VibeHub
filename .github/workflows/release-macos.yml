@@ -1,0 +1,29 @@
+name: release-macos
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-macos:
+    runs-on: macos-15
+    defaults:
+      run:
+        working-directory: vibe-hub/vibe-hub-mac
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build app icon
+        run: chmod +x ./generate-app-icon.sh && ./generate-app-icon.sh
+
+      - name: Package release
+        run: chmod +x ./package-release.sh && ./package-release.sh ${GITHUB_REF_NAME#v}
+
+      - name: Upload zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: VibeHub-macOS
+          path: vibe-hub/vibe-hub-mac/dist/VibeHub-macOS-*.zip

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vibe Hub · 支持对象与能力说明</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0e1117;
+        --panel: rgba(23, 27, 36, 0.86);
+        --line: rgba(255,255,255,0.1);
+        --text: #eef4ff;
+        --muted: rgba(238,244,255,0.62);
+        --accent: #7cb8ff;
+        --green: #5fd48c;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(124,184,255,0.12), transparent 28%),
+          linear-gradient(180deg, #0e1117, #111521 48%, #0d1016);
+        color: var(--text);
+      }
+      .wrap {
+        width: min(920px, calc(100vw - 32px));
+        margin: 32px auto 56px;
+      }
+      .hero, .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        box-shadow: 0 24px 60px rgba(0,0,0,0.28);
+      }
+      .hero {
+        padding: 24px;
+        margin-bottom: 16px;
+      }
+      .eyebrow {
+        margin: 0 0 8px;
+        font-size: 12px;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      h1, h2, h3 { margin: 0; }
+      h1 {
+        font-size: clamp(28px, 4vw, 40px);
+        line-height: 1.08;
+        margin-bottom: 10px;
+      }
+      .lead {
+        margin: 0;
+        line-height: 1.75;
+        color: var(--muted);
+        font-size: 15px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1.1fr .9fr;
+        gap: 16px;
+      }
+      .panel {
+        padding: 18px;
+      }
+      .section-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .meta-list, .item-list { display: flex; flex-direction: column; gap: 10px; }
+      .item {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 12px 14px;
+        background: rgba(255,255,255,0.04);
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+      }
+      .name { font-weight: 700; }
+      .desc {
+        margin: 6px 0 0;
+        color: var(--muted);
+        line-height: 1.65;
+        font-size: 14px;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 24px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        font-size: 12px;
+        white-space: nowrap;
+      }
+      .ok { background: rgba(95,212,140,0.16); color: #ddffea; }
+      .idle { background: rgba(124,184,255,0.14); color: #e3efff; }
+      .muted { background: rgba(255,255,255,0.06); color: rgba(238,244,255,0.72); }
+      .kv {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        font-size: 14px;
+      }
+      .kv:last-child { border-bottom: none; }
+      code, pre {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      pre {
+        margin: 10px 0 0;
+        padding: 12px 14px;
+        background: rgba(0,0,0,0.22);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: auto;
+        line-height: 1.6;
+        font-size: 13px;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover { text-decoration: underline; }
+      .note {
+        margin-top: 10px;
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+      @media (max-width: 820px) {
+        .grid { grid-template-columns: 1fr; }
+        .wrap { width: min(100vw - 20px, 920px); margin-top: 12px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <section class="hero">
+        <p class="eyebrow">Vibe Hub · 本地教程</p>
+        <h1>支持对象与能力说明</h1>
+        <p class="lead">这份页面回答三件事：Vibe Hub 在 OpenClaw 内部可以发给谁、当前系统里可以连接哪些程序或网页、以及这些目标分别支持哪些能力。当前阶段仍是前端原型，所以页面里既包含已经验证的路径，也包含已经预留但还没全部接上的目标。</p>
+      </section>
+
+      <div class="grid">
+        <section class="section-stack">
+          <article class="panel">
+            <p class="eyebrow">已验证路径</p>
+            <h2>OpenCLI / Codex</h2>
+            <div class="meta-list">
+              <div class="kv"><span>程序</span><strong>Codex.app</strong></div>
+              <div class="kv"><span>调度方式</span><strong>opencli codex</strong></div>
+              <div class="kv"><span>调试端口</span><strong>9333</strong></div>
+              <div class="kv"><span>已验证能力</span><strong>status / send / read</strong></div>
+            </div>
+            <pre>nohup /Applications/Codex.app/Contents/MacOS/Codex --remote-debugging-port=9333 >/tmp/codex-opencli.log 2>&1 &amp;
+OPENCLI_CDP_ENDPOINT=http://127.0.0.1:9333 opencli codex status
+OPENCLI_CDP_ENDPOINT=http://127.0.0.1:9333 opencli codex send "你的消息"
+OPENCLI_CDP_ENDPOINT=http://127.0.0.1:9333 opencli codex read</pre>
+            <p class="note">来源：<code>docs/codex-opencli-dispatch-template-v1.md</code></p>
+          </article>
+
+          <article class="panel">
+            <p class="eyebrow">OpenClaw 内部对象</p>
+            <h2>可用 Agent / Session</h2>
+            <div class="item-list">
+              <div class="item"><div class="row"><span class="name">Codex</span><span class="badge ok">可用</span></div><p class="desc">agent · 支持接收 Vibe Hub，适合复杂任务与长文本执行。</p></div>
+              <div class="item"><div class="row"><span class="name">财神</span><span class="badge ok">可用</span></div><p class="desc">agent · 可作为当前任务目标，走 Vibe Hub 路径。</p></div>
+              <div class="item"><div class="row"><span class="name">Echo 审阅</span><span class="badge idle">可审阅</span></div><p class="desc">agent · 偏摘要 / 审阅，不一定直接执行。</p></div>
+              <div class="item"><div class="row"><span class="name">当前 Thread / Session</span><span class="badge ok">已挂载</span></div><p class="desc">session · 表示当前会话已经挂上 Vibe Hub 这一层交互。</p></div>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-stack">
+          <article class="panel">
+            <p class="eyebrow">系统连接终端</p>
+            <h2>程序 / 网页</h2>
+            <div class="item-list">
+              <div class="item"><div class="row"><span class="name">微信</span><span class="badge ok">已连接</span></div><p class="desc">App · 当前会话可投递，可作为输入终端。</p></div>
+              <div class="item"><div class="row"><span class="name">Safari 当前页</span><span class="badge idle">可连接</span></div><p class="desc">Web · 预留可注入 / 可连接能力。</p></div>
+              <div class="item"><div class="row"><span class="name">Chrome 当前页</span><span class="badge idle">待接入</span></div><p class="desc">Web · 等待 bridge 接入后补齐真实能力。</p></div>
+              <div class="item"><div class="row"><span class="name">VS Code</span><span class="badge muted">未连接</span></div><p class="desc">App · 当前只作为预留目标展示。</p></div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <p class="eyebrow">能力说明</p>
+            <h2>Vibe Hub 的两条路径</h2>
+            <div class="item-list">
+              <div class="item"><div class="row"><span class="name">短指令直发</span><span class="badge ok">直接路由</span></div><p class="desc">例如“继续”“暂停”“改写页面”这类短命令，不进 Vibe Hub 审核，直接发给当前目标。</p></div>
+              <div class="item"><div class="row"><span class="name">长内容进卡</span><span class="badge idle">整理后发送</span></div><p class="desc">长文本或多段输入会先进入 Vibe Hub，整理成可编辑内容后，再由用户点击发送。</p></div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <p class="eyebrow">未来开源</p>
+            <h2>开源网址版本</h2>
+            <div class="meta-list">
+              <div class="kv"><span>本地版本</span><strong>当前 V5 原型</strong></div>
+              <div class="kv"><span>未来开源主页</span><strong><a href="#">待补公开网址</a></strong></div>
+              <div class="kv"><span>文档入口</span><strong><a href="#">待补文档站链接</a></strong></div>
+            </div>
+            <p class="note">这一块先作为公开版本预留区。等项目准备公开时，这里可以补上 GitHub 仓库地址、官网文档、演示站入口。</p>
+          </article>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

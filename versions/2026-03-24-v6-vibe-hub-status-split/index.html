@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vibe Hub · V6 Vibe Hub Status Split</title>
+    <link rel="stylesheet" href="./styles.css?v=20260324-v6a" />
+  </head>
+  <body>
+    <div class="token-window-root">
+      <article id="tokenCard" class="vibe-hub glass-card shape-cloud window-card" data-shape="cloud">
+          <div id="dragHandle" class="card-drag-handle">
+            <div class="drag-meta-row">
+              <div class="card-title-row soft-title-row">
+                <div class="mac-traffic-lights" aria-hidden="true">
+                  <span class="traffic-dot dot-red"></span>
+                  <span class="traffic-dot dot-yellow"></span>
+                  <span class="traffic-dot dot-green"></span>
+                </div>
+                <p class="mini-label vibe-hub-mini">Vibe Hub</p>
+                <div class="target-inline-wrap cloud-target-wrap target-inline-plain">
+                  <span class="field-label inline-label">发送目标</span>
+                  <select id="targetSelect" class="select-chip select-chip-minimal"></select>
+                </div>
+              </div>
+              <div class="topbar-actions">
+                <span id="cardStatus" class="status-pill soft-status">待发送</span>
+                <button id="settingsToggleBtn" class="ghost-button small-button icon-button" aria-label="Vibe Hub 状态面板" title="Vibe Hub 状态面板">
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                    <rect x="4" y="5" width="16" height="14" rx="4" fill="none" stroke="currentColor" stroke-width="1.6"></rect>
+                    <path d="M8 10.5h8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                    <path d="M8 14h4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                    <circle cx="16.5" cy="14" r="1.2" fill="currentColor"></circle>
+                  </svg>
+                </button>
+                <button id="stackToggleBtn" class="ghost-button small-button icon-button" aria-label="发送历史" title="发送历史">
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                    <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
+                    <path d="M12 7.5v4.8l3 1.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <section class="editor-panel">
+            <div class="editor-head">
+              <span class="field-label">整理后的内容</span>
+              <div class="editor-head-right">
+                <span id="bodyStats" class="editor-stats">0 字</span>
+                <span id="feedbackBadge" class="feedback-badge hidden"></span>
+              </div>
+            </div>
+            <textarea id="cardBody" class="body-textarea"></textarea>
+          </section>
+
+          <details class="raw-panel cloud-raw-panel">
+            <summary>原始输入</summary>
+            <textarea id="rawInput" class="raw-textarea"></textarea>
+          </details>
+
+          <div id="sendProgress" class="send-progress hidden" aria-hidden="true"><span class="send-progress-bar"></span></div>
+
+          <div class="card-actions">
+            <button id="rewriteBtn" class="ghost-button">重写</button>
+            <button id="shortenBtn" class="ghost-button">压缩</button>
+            <button id="cancelBtn" class="ghost-button danger-soft">取消</button>
+            <button id="sendBtn" class="primary-button">发送</button>
+          </div>
+      </article>
+
+      <aside id="settingsDrawer" class="stack-drawer settings-drawer hidden">
+        <div class="drawer-head settings-drawer-head">
+          <div>
+            <p class="mini-label">Vibe Hub 状态面板</p>
+            <h2>连接与可用性</h2>
+          </div>
+          <div class="drawer-head-actions">
+            <button id="closeSettingsBtn" class="ghost-button small-button">关闭</button>
+          </div>
+        </div>
+
+        <div class="settings-scroll">
+          <div class="settings-list">
+            <div class="settings-item settings-status-item">
+              <span class="field-label">总状态</span>
+              <div class="pair-status-row">
+                <span class="pair-status-dot status-connected"></span>
+                <strong id="pairStatusText">OpenClaw 已连接</strong>
+              </div>
+              <div class="status-kv-list">
+                <div class="status-kv-row"><span>当前输入终端</span><strong id="inputTerminalText">微信</strong></div>
+                <div class="status-kv-row"><span>当前可用 Agent</span><strong>4</strong></div>
+                <div class="status-kv-row"><span>终端连接进度（已连接 / 本机可连接）</span><strong>2 / 5</strong></div>
+                <div class="status-kv-row"><span>已连接网页</span><strong>1</strong></div>
+                <div class="status-kv-row"><span>活动终端</span><strong>2</strong></div>
+              </div>
+            </div>
+
+            <div class="terminal-split-grid">
+              <div class="settings-item settings-status-item terminal-panel">
+                <span class="field-label">输入终端</span>
+                <p class="settings-copy">左边表示你可以从哪些入口输入，以及哪些 OpenClaw session / agent 已支持 Vibe Hub。</p>
+                <div class="availability-list" id="inputTerminalList"></div>
+              </div>
+
+              <div class="settings-item settings-status-item terminal-panel">
+                <span class="field-label">输出终端</span>
+                <p class="settings-copy">告诉用户：你的内容经过 Vibe Hub 加工后，本机有哪些终端可以作为输出目标，以及它们当前是否已连接。</p>
+                <div class="availability-list" id="outputTerminalList"></div>
+              </div>
+            </div>
+
+            <div class="settings-item settings-status-item">
+              <span class="field-label">本地教程</span>
+              <a class="settings-doc-link" href="./opencli-supported-targets.html" target="_blank" rel="noreferrer">查看 Vibe Hub 支持对象与能力说明</a>
+              <p class="settings-copy">本地文档会汇总：哪些 OpenClaw agent / session 可用、哪些程序 / 网页可连接，以及各自支持的功能。</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <aside id="stackDrawer" class="stack-drawer hidden">
+        <div class="drawer-head">
+          <div>
+            <p class="mini-label">发送历史</p>
+            <h2>已发送卡片</h2>
+          </div>
+          <div class="drawer-head-actions">
+            <span id="stackCount" class="stack-count">0 张</span>
+            <button id="closeStackBtn" class="ghost-button small-button">关闭</button>
+          </div>
+        </div>
+
+        <div class="history-filters history-filters-inline">
+          <input id="historySearchInput" class="history-filter-input" type="text" placeholder="搜索关键词" />
+          <select id="historyTargetFilter" class="history-filter-select">
+            <option value="all">全部目标</option>
+          </select>
+          <select id="historyTimeFilter" class="history-filter-select">
+            <option value="all">全部时间</option>
+            <option value="30m">最近30分钟</option>
+            <option value="1h">最近1小时</option>
+            <option value="24h">最近24小时</option>
+            <option value="date">指定日期</option>
+          </select>
+          <input id="historyDateFilter" class="history-filter-select history-date-input hidden" type="date" />
+        </div>
+
+        <div id="stackList" class="stack-list"></div>
+        <div id="detailEmpty" class="stack-empty hidden"></div>
+        <div id="detailContent" class="stack-detail hidden"></div>
+      </aside>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="./app.js?v=20260324-v6a"></script>
+  </body>
+</html>

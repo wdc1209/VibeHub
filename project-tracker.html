@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="refresh" content="15" />
+  <title>Vibe Hub · 项目进展看板</title>
+  <style>
+    :root {
+      --panel: rgba(255,255,255,0.72);
+      --panel-strong: rgba(255,255,255,0.88);
+      --text: #162033;
+      --muted: #5f6f89;
+      --line: rgba(80, 104, 145, 0.18);
+      --shadow: 0 18px 60px rgba(72, 98, 140, 0.18);
+      --radius: 24px;
+      --green: #1c8f5f;
+      --orange: #c97719;
+      --blue: #365fd3;
+      --red: #b94747;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(164, 197, 255, 0.55), transparent 32%),
+        radial-gradient(circle at top right, rgba(214, 226, 255, 0.7), transparent 28%),
+        linear-gradient(180deg, #f7faff 0%, #eef3fb 42%, #e8eef8 100%);
+    }
+    body { padding: 26px; }
+    .shell { max-width: 1380px; margin: 0 auto; display: grid; gap: 18px; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+    .hero {
+      padding: 28px;
+      display: grid;
+      grid-template-columns: 1.45fr 0.85fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    h1 { margin: 0; font-size: 34px; line-height: 1.05; }
+    h2 { margin: 0 0 14px; font-size: 18px; }
+    .summary {
+      margin-top: 12px;
+      font-size: 15px;
+      line-height: 1.72;
+      color: #2d3d58;
+      max-width: 56em;
+    }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .chip {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.54);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+      color: #2b3e60;
+    }
+    .hero-side {
+      padding: 20px;
+      border-radius: 22px;
+      background: var(--panel-strong);
+      border: 1px solid var(--line);
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+    .progress-wrap { display: grid; gap: 8px; }
+    .progress-bar {
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(88, 112, 153, 0.14);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #7ea8ff 0%, #5c82ff 45%, #6a66ff 100%);
+      width: 74%;
+    }
+    .hero-side strong { font-size: 28px; line-height: 1; }
+    .grid-3, .grid-2 { display: grid; gap: 18px; }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .section { padding: 22px; }
+    ul.clean {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 10px;
+      color: #2f405d;
+      line-height: 1.66;
+    }
+    .milestones, .checklist, .timeline, .decision-list, .risk-list { display: grid; gap: 12px; }
+    .milestone, .check, .timeline-item, .decision-item, .risk-item {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.48);
+      border-radius: 18px;
+      padding: 14px 16px;
+      display: grid;
+      gap: 8px;
+    }
+    .milestone-top, .check-title, .row-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .tag.done { color: #0d6b4c; background: rgba(34,160,107,0.12); border-color: rgba(34,160,107,0.2); }
+    .tag.progress { color: #885500; background: rgba(221,138,34,0.12); border-color: rgba(221,138,34,0.2); }
+    .tag.todo { color: #35508b; background: rgba(77,121,255,0.1); border-color: rgba(77,121,255,0.18); }
+    .tag.risk { color: #922f2f; background: rgba(207,77,77,0.1); border-color: rgba(207,77,77,0.18); }
+    .muted { color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .small { font-size: 12px; color: var(--muted); }
+    .links { display: flex; flex-wrap: wrap; gap: 10px; }
+    .link {
+      text-decoration: none;
+      color: #244ea8;
+      background: rgba(255,255,255,0.62);
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-size: 13px;
+      display: inline-block;
+    }
+    .footer {
+      padding: 16px 4px 4px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .badge { padding: 4px 9px; border-radius: 999px; font-size: 12px; border: 1px solid var(--line); background: rgba(255,255,255,0.56); }
+    .badge.green { color: var(--green); }
+    .badge.orange { color: var(--orange); }
+    .badge.red { color: var(--red); }
+    .badge.blue { color: var(--blue); }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    @media (max-width: 1100px) { .hero, .grid-3, .grid-2 { grid-template-columns: 1fr; } }
+    @media (max-width: 700px) {
+      body { padding: 14px; }
+      .hero, .section { padding: 18px; }
+      h1 { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="panel hero">
+      <div>
+        <div class="eyebrow">Vibe Hub · 项目总览</div>
+        <h1>Vibe Hub · 项目进展看板</h1>
+        <div class="summary">
+          方向已经从网页原型正式切到 <strong>原生 macOS App（SwiftUI / AppKit）</strong>。
+          当前重点不是再发散新方向，而是把 <strong>真实状态语义</strong>、<strong>编辑生命周期</strong>、<strong>原生窗口体验</strong> 一项项收口。
+        </div>
+        <div class="meta">
+          <div class="chip">阶段：v8 验收收口 → v9 规划启动</div>
+          <div class="chip">状态：推进中</div>
+          <div class="chip">更新时间：2026-03-26 11:45 GMT+8</div>
+        </div>
+      </div>
+      <div class="hero-side">
+        <div>
+          <div class="eyebrow">推进度</div>
+          <strong>74%</strong>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill"></div></div>
+          <div class="muted">按当前里程碑、真实卡点和已落地项估算的工程进度，不是形式化燃尽图。</div>
+        </div>
+        <div class="muted">
+          当前焦点：v8 已完成前 10 条收口并准备进入第 11 条测试；与此同时，v9 方向已明确新增两条：<strong>触发式 Vibe Hub skill</strong> 与 <strong>Vibe Hub 内语音按压输入</strong>。
+        </div>
+      </div>
+    </section>
+
+    <section class="panel section">
+      <h2>v8 验收与本轮修改统一清单</h2>
+      <div class="milestones" style="margin-bottom: 18px;">
+        <div class="milestone" style="background: rgba(34,160,107,0.08);">
+          <div class="milestone-top"><strong>✅ 已验收</strong><span class="tag done">10 项</span></div>
+          <div class="muted">这些是你已经明确口头验收通过的内容。</div>
+          <ul class="clean">
+            <li><s>1 · 右上角 Codex 连接状态正确</s></li>
+            <li><s>2 · 历史按钮改回时钟 / 历史语义图标</s></li>
+            <li><s>3 · 状态面板恢复详细内容</s></li>
+            <li><s>4 · 左下角不再错误提示“无法连接到服务器”</s></li>
+            <li><s>5 · 漂浮效果取消</s></li>
+            <li><s>6 · 窗体四周玻璃留白统一</s></li>
+            <li><s>7 · 输入终端只显示真实接入渠道</s></li>
+            <li><s>8 · 输出终端分成已连接 / 可连接</s></li>
+            <li><s>9 · 本地教程入口正确</s></li>
+            <li><s>10 · 发送历史支持日期筛选</s></li>
+          </ul>
+        </div>
+
+        <div class="milestone" style="background: rgba(221,138,34,0.08);">
+          <div class="milestone-top"><strong>🟡 未验收 / 继续修改</strong><span class="tag progress">0 项</span></div>
+          <div class="muted">前 10 条里，当前没有仍处于“继续修改中”的验收项。</div>
+          <ul class="clean">
+            <li><strong>前 10 条当前已全部收口。</strong> 接下来可以把精力切到第 11 条集中测试。</li>
+          </ul>
+        </div>
+
+        <div class="milestone" style="background: rgba(77,121,255,0.08);">
+          <div class="milestone-top"><strong>⏸ 暂缓后测</strong><span class="tag todo">1 项</span></div>
+          <div class="muted">按你要求，等前 10 条收口后再单独测试这一条。</div>
+          <ul class="clean">
+            <li><strong>11 · A/B/C 编辑生命周期正确</strong> —— 先不验收，等前 10 条收口后再集中测试。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid-3">
+      <section class="panel section">
+        <h2>设计原则</h2>
+        <ul class="clean">
+          <li>Vibe Hub 不是普通聊天输入框，而是承接长描述、整理意图、再确认送出的前台载体。</li>
+          <li>它必须是一个真正独立、可自由拖动的 macOS 窗口，而不是网页里模拟出来的假桌面卡片。</li>
+          <li>输入与输出边界要清晰：输入来自 OpenClaw + bridge，输出通过 bridge + opencli / 目标适配器完成。</li>
+          <li>状态面板里的每一项都必须有真实来源，不允许装饰性数字或虚构状态。</li>
+          <li>Vibe Hub 的价值在于“整理与确认”，人始终保留最后修改权。</li>
+          <li>历史记录不是附属品，而是可回看、可筛选、可重发的语言工作流。</li>
+        </ul>
+      </section>
+
+      <section class="panel section">
+        <h2>项目目标</h2>
+        <ul class="clean">
+          <li>做成真正原生的 SwiftUI / AppKit macOS utility window。</li>
+          <li>继承 V6 / v8 的产品结构：主编辑区、原始输入、状态面板、历史面板、发送入口。</li>
+          <li>读 bridge 的真实状态与 token session。</li>
+          <li>通过 bridge 将整理后的内容真实发送到 Codex / 目标终端。</li>
+          <li>保留本地历史记录、筛选与回看能力。</li>
+          <li>把安装流程收束到可重复的本地安装路径，再推进对外分发。</li>
+        </ul>
+      </section>
+
+      <section class="panel section">
+        <h2>职责边界</h2>
+        <div class="muted" style="margin-bottom:10px;">Vibe Hub 自己负责</div>
+        <ul class="clean">
+          <li>窗口 UI</li>
+          <li>内容编辑</li>
+          <li>状态展示</li>
+          <li>本地历史记录</li>
+          <li>发送入口</li>
+        </ul>
+        <div class="muted" style="margin:14px 0 10px;">不由 Vibe Hub 负责</div>
+        <ul class="clean">
+          <li>直接从聊天软件表面抓输入</li>
+          <li>直接负责目标终端投递</li>
+          <li>替代 OpenClaw / bridge 的路由职责</li>
+        </ul>
+      </section>
+    </div>
+
+    <section class="panel section">
+      <h2>v9 新增方向（已确认可行）</h2>
+      <div class="milestones">
+        <div class="milestone" style="background: rgba(77,121,255,0.08);">
+          <div class="milestone-top"><strong>v9-1 · 触发式 Vibe Hub skill</strong><span class="tag todo">可行，待实施</span></div>
+          <div class="muted">把“什么情况必须先进 Vibe Hub、什么情况允许 OpenClaw 直发”固化成一个触发式 skill，并允许给所有 IDE / OpenClaw 安装。触发后不再由 OpenClaw 直接处理，而是把消息转发给 Vibe Hub 进入整理流程。</div>
+        </div>
+        <div class="milestone" style="background: rgba(77,121,255,0.08);">
+          <div class="milestone-top"><strong>v9-2 · Vibe Hub 语音按压输入</strong><span class="tag progress">骨架已落地</span></div>
+          <div class="muted">第一轮骨架已落地：原生 mac app 已加入按住说话入口、录音状态机与桥接回填语义；bridge 侧已新增 <code>/voice/input</code> contract，把转写结果并入当前 token session，并把主编辑区推回“建议整理后再发送”的状态。</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid-2">
+      <section class="panel section">
+        <h2>计划 / 里程碑</h2>
+        <div class="milestones">
+          <div class="milestone"><div class="milestone-top"><strong>M1 · 原生窗口本体</strong><span class="tag progress">已启动</span></div><div class="muted">SwiftUI + AppKit，真实 utility window，去网页壳语义。</div></div>
+          <div class="milestone"><div class="milestone-top"><strong>M2 · V6 / v8 结构迁移</strong><span class="tag progress">进行中</span></div><div class="muted">迁移 header、主编辑区、原始输入、状态面板、历史面板、发送反馈。</div></div>
+          <div class="milestone"><div class="milestone-top"><strong>M3 · bridge 输入接入</strong><span class="tag progress">进行中</span></div><div class="muted">读取 <code>/status</code> 与 token-session，把真实输入源和连接对象灌进原生 UI。</div></div>
+          <div class="milestone"><div class="milestone-top"><strong>M4 · 输出接入</strong><span class="tag progress">进行中</span></div><div class="muted">通过 bridge + <code>/send/codex</code> 完成真实发送，并返回成功/失败反馈。</div></div>
+          <div class="milestone"><div class="milestone-top"><strong>M5 · logo / icon</strong><span class="tag todo">待继续</span></div><div class="muted">补齐 Dock / Finder / README 可用的 icon 与小标识。</div></div>
+          <div class="milestone"><div class="milestone-top"><strong>M6 · 安装与分发</strong><span class="tag progress">已起步</span></div><div class="muted">本地一键安装流已建立；后续再推进 dmg / onboarding / doctor。</div></div>
+        </div>
+      </section>
+
+      <section class="panel section">
+        <h2>v8 验收清单</h2>
+        <div class="checklist">
+          <div class="check"><div class="check-title"><strong>1-10 · 前十条验收项</strong><span class="tag done">已收口</span></div><div class="muted">前 10 条当前已全部收口，后续只在回归测试发现问题时再打开。</div></div>
+          <div class="check"><div class="check-title"><strong>11 · A/B/C 编辑生命周期</strong><span class="tag progress">待集中测试</span></div><div class="muted">已做了第一版实现，但按你的要求先不验收，等前 10 条收口后再集中测试。</div></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="grid-3">
+      <section class="panel section">
+        <h2>已完成</h2>
+        <ul class="clean">
+          <li>Vibe Hub 目录已统一收拢，V1-V6 原型时间线已整理。</li>
+          <li>产品方向已从 Electron 明确切换到 SwiftUI / AppKit 原生 macOS app。</li>
+          <li><code>vibe-hub/SWIFTUI-APPKIT-PLAN.md</code> 已落成。</li>
+          <li>原生 VibeHub 工程骨架已存在，bridge client / view model / history store 已加入。</li>
+          <li>原生 app 已成功重建过多轮，<code>.app</code> 打包与重新签名流程已基本打通。</li>
+          <li>bridge <code>/status</code> 已向 v8 需要的真实字段扩展：输入源、输出终端、本地教程 URL。</li>
+          <li>第 6 条“窗体四周玻璃留白统一”已验收通过。</li>
+        </ul>
+      </section>
+
+      <section class="panel section">
+        <h2>进行中</h2>
+        <ul class="clean">
+          <li>把第 11 条 A/B/C 编辑生命周期做成可一次性集中验证的稳定实现。</li>
+          <li>继续验证 native send path 到 Codex 的端到端成功/失败反馈是否稳定。</li>
+          <li>继续把状态 / 历史 / 教程面板收成更像产品而不是开发调试层。</li>
+        </ul>
+      </section>
+
+      <section class="panel section">
+        <h2>下一步</h2>
+        <ul class="clean">
+          <li>围绕第 11 条做集中测试：A 直接发送、B 手改整理内容、C 新原文进入后再 AI 总结。</li>
+          <li>对照真实使用链路回归一次状态面板和发送路径。</li>
+          <li>继续把这张项目页收成长期可看的驾驶舱。</li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="grid-2">
+      <section class="panel section">
+        <h2>最近更新日志</h2>
+        <div class="timeline">
+          <div class="timeline-item"><div class="row-top"><strong>2026-03-26 11:45</strong><span class="badge blue">v9 方向已确认可行</span></div><div>已确认两条 v9 内容都可行：1）新增可给所有 IDE / OpenClaw 安装的触发式 Vibe Hub skill，用来把符合条件的消息转发给 Vibe Hub；2）在 Vibe Hub 内增加语音按压输入，语音经 bridge 转到 OpenClaw 处理，再把结果回填到“整理后的内容”。</div></div>
+          <div class="timeline-item"><div class="row-top"><strong>2026-03-26 16:45</strong><span class="badge blue">v9-2 第一轮骨架已落地</span></div><div>已新增 Vibe Hub 内按住说话入口、录音/处理状态机、本地语音转写服务、bridge <code>/voice/input</code> 接口，以及打包所需的麦克风/语音识别权限描述。当前已具备“按住说话 -> transcript 并入 raw input -> 主编辑区回到整理态”的闭环。</div></div>
+          <div class="timeline-item"><div class="row-top"><strong>2026-03-26 11:06</strong><span class="badge green">验收状态已同步</span></div><div>已同步最新口径：6 · 窗体四周玻璃留白统一 验收通过；11 · A/B/C 编辑生命周期正确 暂缓后测，等前 10 条收口后再集中测试。</div></div>
+          <div class="timeline-item"><div class="row-top"><strong>2026-03-26 凌晨</strong><span class="badge orange">新一轮体验反馈已入板</span></div><div>把最新视觉与状态问题重新收口进任务看板，并围绕原生窗口、玻璃边缘和状态语义持续修正。</div></div>
+          <div class="timeline-item"><div class="row-top"><strong>2026-03-25 白天</strong><span class="badge blue">状态语义推进</span></div><div>bridge <code>/status</code> 开始补真实输入源、输出终端 rows、本地教程 URL；原生状态面板开始消费这些真实字段。</div></div>
+          <div class="timeline-item"><div class="row-top"><strong>2026-03-25 更早</strong><span class="badge blue">技术路线拍板</span></div><div>桌面版路线正式从 Electron 转为 SwiftUI / AppKit，确立 Vibe Hub 作为真正独立原生 macOS 小窗的方向。</div></div>
+        </div>
+      </section>
+
+      <section class="panel section">
+        <h2>待你决策 / 适合你拍板的点</h2>
+        <div class="decision-list">
+          <div class="decision-item"><div class="row-top"><strong>11 条集中测试的通过标准</strong><span class="tag progress">下一步需要你拍板</span></div><div class="muted">前 10 条已收口，下一轮最值得拍板的就是 A/B/C 生命周期到底以什么观察标准算通过。</div></div>
+          <div class="decision-item"><div class="row-top"><strong>v9 的实施顺序</strong><span class="tag todo">待定</span></div><div class="muted">两条都已确认可行，但还需要决定先做“触发式 Vibe Hub skill”，还是先做“Vibe Hub 内语音按压输入”。</div></div>
+          <div class="decision-item"><div class="row-top"><strong>项目页后续展示风格</strong><span class="tag todo">可选</span></div><div class="muted">我可以把这页继续往“更像项目看板 / 更像产品页面 / 更像工程驾驶舱”三种风格中的一种收，你拍一个方向会更省时间。</div></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel section">
+      <h2>关键文档</h2>
+      <div class="links">
+        <a class="link" href="SWIFTUI-APPKIT-PLAN.md" target="_blank">当前总计划 ↗</a>
+        <a class="link" href="WORKLOG.md" target="_blank">当前工作日志 ↗</a>
+        <a class="link" href="NOW.md" target="_blank">当前进行中的事情 ↗</a>
+        <a class="link" href="DESIGN-HISTORY.md" target="_blank">设计历史 ↗</a>
+        <a class="link" href="README.md" target="_blank">项目目录说明 ↗</a>
+      </div>
+      <div class="small" style="margin-top: 14px;">文件位置：<code>/Users/nethon/.openclaw/workspace-main/vibe-hub/project-tracker.html</code></div>
+    </section>
+
+    <div class="footer">
+      <div>自动刷新：每 15 秒整页刷新一次</div>
+      <div>这个页面现在是单文件静态版，本地双击打开即可看</div>
+    </div>
+  </div>
+</body>
+</html>

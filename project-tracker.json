@@ -1,0 +1,184 @@
+{
+  "project": "Vibe Hub",
+  "updatedAt": "2026-03-25 22:25 GMT+8",
+  "status": {
+    "phase": "v8 native productization",
+    "summary": "方向已经从网页原型正式切到原生 macOS App（SwiftUI / AppKit）。bridge 与 Codex 链路已基本打通一轮，当前主战场是原生窗口体验、真实状态接入、以及 v8 编辑生命周期的严格落地。",
+    "health": "推进中",
+    "completion": 68
+  },
+  "designPrinciples": [
+    "Vibe Hub 不是普通聊天输入框，而是承接长描述、整理意图、再确认送出的前台载体。",
+    "它必须是一个真正独立、可自由拖动的 macOS 窗口，而不是网页里模拟出来的假桌面卡片。",
+    "输入与输出边界要清晰：输入来自 OpenClaw + bridge，输出通过 bridge + opencli / 目标适配器完成。",
+    "状态面板里的每一项都必须有真实来源，不允许装饰性数字或虚构状态。",
+    "Vibe Hub 的价值在于“整理与确认”，人始终保留最后修改权。",
+    "历史记录不是附属品，而是可回看、可筛选、可重发的语言工作流。",
+    "视觉上应保留轻微漂浮生命感，但不能牺牲稳定性，也不能出现下沉感。",
+    "设计与实现都按默认未来可能公开的标准来整理。"
+  ],
+  "goals": [
+    "做成真正原生的 SwiftUI / AppKit macOS utility window。",
+    "继承 V6 / v8 的产品结构：主编辑区、原始输入、状态面板、历史面板、发送入口。",
+    "读 bridge 的真实状态与 token session。",
+    "通过 bridge 将整理后的内容真实发送到 Codex / 目标终端。",
+    "保留本地历史记录、筛选与回看能力。",
+    "把安装流程收束到可重复的本地安装与后续分发路径。"
+  ],
+  "scope": {
+    "tokenCardOwns": [
+      "窗口 UI",
+      "内容编辑",
+      "状态展示",
+      "本地历史记录",
+      "发送入口"
+    ],
+    "notOwnedByVibeHub": [
+      "直接从聊天软件表面抓输入",
+      "直接负责目标终端投递",
+      "替代 OpenClaw / bridge 的路由职责"
+    ]
+  },
+  "plan": [
+    {
+      "id": "M1",
+      "title": "原生窗口本体",
+      "status": "已启动",
+      "details": "SwiftUI + AppKit，真实 utility window，去网页壳语义。"
+    },
+    {
+      "id": "M2",
+      "title": "V6 / v8 结构迁移",
+      "status": "进行中",
+      "details": "迁移 header、主编辑区、原始输入、状态面板、历史面板、发送反馈。"
+    },
+    {
+      "id": "M3",
+      "title": "bridge 输入接入",
+      "status": "进行中",
+      "details": "读取 /status 与 token-session，把真实输入源和连接对象灌进原生 UI。"
+    },
+    {
+      "id": "M4",
+      "title": "输出接入",
+      "status": "进行中",
+      "details": "通过 bridge + /send/codex 完成真实发送，并返回成功/失败反馈。"
+    },
+    {
+      "id": "M5",
+      "title": "logo / icon",
+      "status": "待继续",
+      "details": "补齐 Dock / Finder / README 可用的 icon 与小标识。"
+    },
+    {
+      "id": "M6",
+      "title": "安装与分发",
+      "status": "已起步",
+      "details": "本地一键安装流已建立；后续再推进 dmg / onboarding / doctor。"
+    }
+  ],
+  "progress": {
+    "done": [
+      "Vibe Hub 目录已统一收拢，V1-V6 原型时间线已整理。",
+      "产品方向已从 Electron 明确切换到 SwiftUI / AppKit 原生 macOS app。",
+      "`vibe-hub/SWIFTUI-APPKIT-PLAN.md` 已落成。",
+      "原生 VibeHub 工程骨架已存在，相关 Swift 文件已加上。",
+      "bridge client / view model / 本地 history store 已加入。",
+      "原生 app 已成功重建过多轮，`.app` 打包与重新签名流程已基本打通。",
+      "新增 `package-app.sh`，让可运行打包修复变成一条可重复命令。",
+      "新增 `smoke-test.sh`，可重复验证 `/status`、`/token-session`、`/send/codex`。",
+      "新增 `install-local.sh`，本地安装路径已经收束成一条命令。",
+      "bridge `/status` 已向 v8 需要的真实字段扩展：输入源、已连接 agent、输出终端、本地教程 URL。",
+      "bridge 已新增第一版 `/connect/codex` 动作接口。",
+      "原生状态面板已开始消费真实 bridge 行，而不再只看占位计数。",
+      "原生历史筛选已补上第 4 个维度：日期。",
+      "发送到 Codex 的链路此前已跑通过一轮，主阻塞已不再是“能不能发出去”。"
+    ],
+    "inProgress": [
+      "把 v8 视觉和交互要求完整压进原生版，而不是停留在“能跑”。",
+      "校准漂浮效果，让它接近原型感知但绝不出现下沉/溺水。",
+      "把状态面板彻底切到真实状态语义：输入终端、连接过的 session/agent、输出终端已连接/可连接。",
+      "把‘整理后内容’的 A/B/C 生命周期完整落地。",
+      "验证 native send path 到 Codex 的端到端成功/失败反馈是否稳定。",
+      "继续把状态 / 历史 / 教程面板收成更像产品而不是开发调试层。"
+    ],
+    "next": [
+      "继续完善原生状态面板的数据真实性与连接动作。",
+      "严格实现编辑生命周期：当前整理内容 + 新原文 -> 再 AI 总结。",
+      "再做一轮漂浮参数调校，回到接近原型感知。",
+      "补一版更适合持续查看的项目看板和更新机制。"
+    ]
+  },
+  "v8Checklist": [
+    {
+      "title": "漂浮参数按原型感知重做",
+      "status": "进行中",
+      "note": "已多次回调与回退；当前目标是轻微整体漂浮，不下沉、不戏剧化。"
+    },
+    {
+      "title": "状态面板所有数字/项目必须有真实来源",
+      "status": "进行中",
+      "note": "bridge `/status` 已开始补真实字段，原生面板已开始接入。"
+    },
+    {
+      "title": "输入终端只显示真实接入渠道（当前含微信 / webchat）",
+      "status": "进行中",
+      "note": "bridge 已开始输出真实输入源 rows。"
+    },
+    {
+      "title": "session / agent 只展示真实连接过 Vibe Hub 的对象",
+      "status": "进行中",
+      "note": "bridge 已开始补 connected agent rows，仍需进一步验证与清洗。"
+    },
+    {
+      "title": "输出终端分成已连接 / 可连接，并支持点击连接",
+      "status": "进行中",
+      "note": "bridge 已有第一版 `/connect/codex`，还需继续扩展 UI 和动作语义。"
+    },
+    {
+      "title": "说明改为本地教程并指向本地网页教程",
+      "status": "已部分完成",
+      "note": "bridge 已提供 local tutorial URL；还需继续把原生面板语言和入口收得更对。"
+    },
+    {
+      "title": "发送历史搜索筛选补齐日期",
+      "status": "已完成",
+      "note": "native history filter 第 4 个维度已加入 date。"
+    },
+    {
+      "title": "整理后内容遵循 A/B/C 编辑生命周期",
+      "status": "进行中",
+      "note": "已开始改为在当前已编辑 body 上叠加新原文上下文，而不是粗暴覆盖。仍需完整验证。"
+    }
+  ],
+  "problems": [
+    "原生窗口的漂浮感很难拿捏：太弱就没生命感，太强就像下沉或文本与壳层不同步。",
+    "状态面板已经不是纯 UI 问题，而是需要 bridge 提供足够真实、稳定、可解释的数据。",
+    "v8 的关键不是视觉，而是编辑状态机：用户手改后的整理内容不能被后续输入覆盖掉。",
+    "聊天侧定时催进度的 cron 触达并不可靠，不能把“任务存在”当成“提醒一定送达”。",
+    "原生 app 独立于当前 exec / session 的长期稳定运行，还需要继续验证。"
+  ],
+  "currentFocus": [
+    "验证原生 UI 能正确读 bridge status + token session。",
+    "验证原生 send action 真正到达 Codex，并给出正确成功/失败反馈。",
+    "继续把状态 / 历史 / 教程 UI 从“能用”推进到“清楚、真实、像产品”。"
+  ],
+  "links": [
+    {
+      "label": "当前总计划",
+      "path": "vibe-hub/SWIFTUI-APPKIT-PLAN.md"
+    },
+    {
+      "label": "当前工作日志",
+      "path": "vibe-hub/WORKLOG.md"
+    },
+    {
+      "label": "当前进行中的事情",
+      "path": "vibe-hub/NOW.md"
+    },
+    {
+      "label": "设计历史",
+      "path": "vibe-hub/DESIGN-HISTORY.md"
+    }
+  ]
+}

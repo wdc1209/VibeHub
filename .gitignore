@@ -1,0 +1,14 @@
+.DS_Store
+node_modules/
+.runtime/
+.vibe-hub/
+.env
+.env.*
+
+vibe-hub-mac/.build/
+vibe-hub-mac/dist/
+vibe-hub-mac/VibeHubApp/Assets/VibeHub.iconset/
+
+*.log
+*.tmp
+*.ips

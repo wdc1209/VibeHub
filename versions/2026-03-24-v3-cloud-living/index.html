@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vibe Hub · Cloud Living</title>
+    <link rel="stylesheet" href="./styles.css?v=20260324-1459" />
+  </head>
+  <body>
+    <div class="desktop-stage cloud-stage">
+      <div class="sky-haze haze-a"></div>
+      <div class="sky-haze haze-b"></div>
+      <div class="sky-haze haze-c"></div>
+      <div class="wallpaper-overlay"></div>
+      <div class="desktop-dock cloud-dock"></div>
+
+      <section class="floating-shell">
+        <article id="tokenCard" class="vibe-hub glass-card shape-cloud" data-shape="cloud">
+          <div id="dragHandle" class="card-drag-handle">
+            <div class="drag-meta-row">
+              <div class="card-title-row soft-title-row">
+                <p class="mini-label vibe-hub-mini">Vibe Hub</p>
+                <div class="target-inline-wrap cloud-target-wrap">
+                  <span class="field-label inline-label">发送目标</span>
+                  <select id="targetSelect" class="select-chip"></select>
+                </div>
+              </div>
+              <div class="topbar-actions">
+                <span id="cardStatus" class="status-pill soft-status">待发送</span>
+                <button id="stackToggleBtn" class="ghost-button small-button">发送历史</button>
+              </div>
+            </div>
+          </div>
+
+          <section class="editor-panel">
+            <div class="editor-head">
+              <span class="field-label">整理后的内容</span>
+              <div class="editor-head-right">
+                <span id="bodyStats" class="editor-stats">0 字</span>
+                <span id="feedbackBadge" class="feedback-badge hidden"></span>
+              </div>
+            </div>
+            <textarea id="cardBody" class="body-textarea"></textarea>
+          </section>
+
+          <details class="raw-panel cloud-raw-panel">
+            <summary>原始输入</summary>
+            <textarea id="rawInput" class="raw-textarea"></textarea>
+          </details>
+
+          <div class="card-actions">
+            <button id="rewriteBtn" class="ghost-button">重写</button>
+            <button id="shortenBtn" class="ghost-button">压缩</button>
+            <button id="cancelBtn" class="ghost-button danger-soft">取消</button>
+            <button id="sendBtn" class="primary-button">发送</button>
+          </div>
+        </article>
+      </section>
+
+      <aside id="stackDrawer" class="stack-drawer hidden">
+        <div class="drawer-head">
+          <div>
+            <p class="mini-label">发送历史</p>
+            <h2>已发送卡片</h2>
+          </div>
+          <div class="drawer-head-actions">
+            <span id="stackCount" class="stack-count">0 张</span>
+            <button id="closeStackBtn" class="ghost-button small-button">关闭</button>
+          </div>
+        </div>
+
+        <div id="stackList" class="stack-list"></div>
+
+        <div id="detailEmpty" class="stack-empty">点击任意一张已发送卡片，查看它发给谁、发了什么。</div>
+
+        <div id="detailContent" class="stack-detail hidden">
+          <div class="detail-meta-row">
+            <div class="detail-meta-box">
+              <span class="field-label">发送给</span>
+              <strong id="detailTarget"></strong>
+            </div>
+            <div class="detail-meta-box">
+              <span class="field-label">发送时间</span>
+              <strong id="detailTime"></strong>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <span class="field-label">摘要</span>
+            <p id="detailSummary" class="detail-summary"></p>
+          </div>
+
+          <div class="detail-section">
+            <span class="field-label">卡片正文</span>
+            <pre id="detailBody" class="detail-pre"></pre>
+          </div>
+
+          <div class="detail-actions">
+            <button id="detailResendBtn" class="ghost-button">再次发送</button>
+            <button id="detailEditResendBtn" class="ghost-button">编辑后发送</button>
+            <button id="detailSendAnotherBtn" class="primary-button alt">转发给其他目标</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="./app.js?v=20260324-1459"></script>
+  </body>
+</html>
