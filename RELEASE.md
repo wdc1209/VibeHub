@@ -47,6 +47,13 @@ cp -R /Users/nethon/.openclaw/workspace-main/vibe-hub/vibe-hub-mac/dist/VibeHub.
 
 Without Developer ID signing and notarization, the app is suitable for direct distribution and testing, but Gatekeeper behavior may be stricter on other machines.
 
+## Product line direction
+
+- The current public release track is macOS-only.
+- macOS should keep its own package and installation flow.
+- Windows, if added later, should be released as a separate package instead of being bundled into the macOS release.
+- The current macOS release should not be destabilized just to pre-optimize for future Windows support.
+
 ## Secrets and local config
 
 - Do not publish `.vibe-hub/`, `.env`, API keys, memory files, or personal logs.

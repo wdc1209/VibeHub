@@ -40,6 +40,15 @@ It is designed as a preparation layer rather than a normal chat box.
 - Multiple target routing
 - Local packaging for GitHub Releases
 
+## Roadmap
+
+- The current `1.x` product line is macOS-first.
+- The published GitHub release is the correct distribution path for macOS users.
+- Apple Speech remains the default voice option for the macOS release.
+- `SenseVoice ONNX` remains an optional secondary voice option and requires a local model download.
+- A future Windows version will be built as a separate desktop package instead of forcing the current macOS build into a cross-platform compromise.
+- The long-term plan is to reuse as much backend and routing logic as possible while keeping platform-specific desktop shells separate.
+
 ## Release
 
 Current macOS packaging is available under `vibe-hub-mac/`.
