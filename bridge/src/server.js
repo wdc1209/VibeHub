@@ -18,6 +18,7 @@ const HOST = process.env.VIBE_HUB_HOST || process.env.TOKEN_CARD_HOST || '127.0.
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', '..');
 const V6_DIR = path.join(ROOT, 'versions', '2026-03-24-v6-vibe-hub-status-split');
 const CODEX_CDP_ENDPOINT = 'http://127.0.0.1:9333';
+const CODEX_MAIN_TARGET = 'app://-/index.html?hostId=local';
 const CODEX_CDP_STATUS_COMMAND = `OPENCLI_CDP_ENDPOINT=${CODEX_CDP_ENDPOINT} opencli codex status`;
 const CODEX_BINARY = '/Applications/Codex.app/Contents/MacOS/Codex';
 const CODEX_CONNECT_LOG = '/tmp/vibe-hub-connect-codex.log';
@@ -50,17 +51,31 @@ function decodeCodexThreadWindowTitle(windowTitle) {
   return value.slice('thread::'.length).trim() || null;
 }
 
-async function withCodexPage(callback) {
+async function withCodexPage(callback, target = null) {
   process.env.OPENCLI_CDP_ENDPOINT = CODEX_CDP_ENDPOINT;
+  const previousTarget = process.env.OPENCLI_CDP_TARGET;
+  if (target) {
+    process.env.OPENCLI_CDP_TARGET = target;
+  } else {
+    delete process.env.OPENCLI_CDP_TARGET;
+  }
   const bridge = new CDPBridge();
-  const page = await bridge.connect({ timeout: 5 });
   try {
-    return await callback(page);
-  } finally {
+    const page = await bridge.connect({ timeout: 5 });
     try {
-      await bridge.close();
-    } catch {
-      // best-effort close
+      return await callback(page);
+    } finally {
+      try {
+        await bridge.close();
+      } catch {
+        // best-effort close
+      }
+    }
+  } finally {
+    if (typeof previousTarget === 'string') {
+      process.env.OPENCLI_CDP_TARGET = previousTarget;
+    } else {
+      delete process.env.OPENCLI_CDP_TARGET;
     }
   }
 }
@@ -69,16 +84,14 @@ async function listCodexPinnedThreads() {
   try {
     const items = await withCodexPage((page) => page.evaluate(`
       (() => {
-        const normalize = (text) => String(text || '')
-          .replace(/\\s*(刚刚|\\d+\\s*(秒|分|分钟|小?时|天|周|个月|月|年)|Yesterday|Today|\\d+\\s*(min|mins?|h|hr|hrs?|day|days|week|weeks|month|months|year|years))\\s*$/iu, '')
-          .replace(/[\\s+\\-·•]+$/u, '')
-          .trim();
+        const normalize = (text) => String(text || '').trim();
         const list = document.querySelector('[role="list"][aria-label="置顶的线程"]');
         if (!(list instanceof HTMLElement)) return [];
         return Array.from(list.querySelectorAll('[role="listitem"]'))
           .map((item) => {
             const rawText = String(item.textContent || '').trim();
-            const label = normalize(rawText);
+            const titleNode = item.querySelector('span');
+            const label = normalize(titleNode?.textContent || rawText);
             if (!label) return null;
             return {
               label,
@@ -87,7 +100,7 @@ async function listCodexPinnedThreads() {
           })
           .filter(Boolean);
       })()
-    `));
+    `), CODEX_MAIN_TARGET);
 
     if (!Array.isArray(items) || items.length === 0) {
       return [];
@@ -132,28 +145,79 @@ async function switchCodexPinnedThread(threadLabel) {
       if (!(list instanceof HTMLElement)) {
         return { ok: false, error: 'Codex 当前没有可见的置顶线程列表' };
       }
+      const currentHeaderSpans = Array.from(document.querySelectorAll('header span'))
+        .map((node) => String(node.textContent || '').trim())
+        .filter(Boolean);
+      if (currentHeaderSpans.includes(targetLabel)) {
+        return { ok: true, label: targetLabel, alreadySelected: true };
+      }
       const items = Array.from(list.querySelectorAll('[role="listitem"]'));
-      const match = items.find((item) => normalize(item.textContent || '') === targetLabel);
+      const match = items.find((item) => {
+        const titleNode = item.querySelector('span');
+        return normalize(titleNode?.textContent || item.textContent || '') === targetLabel;
+      });
       if (!(match instanceof HTMLElement)) {
         return { ok: false, error: '未找到指定的 Codex 置顶线程' };
       }
-      const outer = match.querySelector('[role="button"]');
-      const inner = outer?.firstElementChild;
-      const clickable = inner instanceof HTMLElement
-        ? inner
-        : (outer instanceof HTMLElement ? outer : (match.firstElementChild || match));
-      if (!(clickable instanceof HTMLElement)) {
+      const clickables = Array.from(match.querySelectorAll('[role="button"]'))
+        .filter((node) => node instanceof HTMLElement)
+        .filter((node) => !/unpin chat/i.test(String(node.getAttribute('aria-label') || '')));
+      if (clickables.length === 0) {
         return { ok: false, error: '指定线程没有可点击节点' };
       }
-      clickable.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
-      clickable.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
-      clickable.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
-      return { ok: true, label: targetLabel };
+      for (const clickable of clickables) {
+        clickable.focus?.();
+        clickable.dispatchEvent(new PointerEvent('pointerdown', {
+          bubbles: true,
+          cancelable: true,
+          pointerId: 1,
+          pointerType: 'mouse',
+          isPrimary: true,
+          button: 0,
+          buttons: 1,
+        }));
+        clickable.dispatchEvent(new MouseEvent('mousedown', {
+          bubbles: true,
+          cancelable: true,
+          view: window,
+          button: 0,
+          buttons: 1,
+        }));
+        clickable.dispatchEvent(new PointerEvent('pointerup', {
+          bubbles: true,
+          cancelable: true,
+          pointerId: 1,
+          pointerType: 'mouse',
+          isPrimary: true,
+          button: 0,
+          buttons: 0,
+        }));
+        clickable.dispatchEvent(new MouseEvent('mouseup', {
+          bubbles: true,
+          cancelable: true,
+          view: window,
+          button: 0,
+          buttons: 0,
+        }));
+        clickable.dispatchEvent(new MouseEvent('click', {
+          bubbles: true,
+          cancelable: true,
+          view: window,
+          button: 0,
+        }));
+      }
+      const headerSpans = Array.from(document.querySelectorAll('header span'))
+        .map((node) => String(node.textContent || '').trim())
+        .filter(Boolean);
+      const switched = headerSpans.includes(targetLabel);
+      return switched
+        ? { ok: true, label: targetLabel }
+        : { ok: false, error: '线程点击已触发，但 Codex 当前线程标题未更新' };
     })()
-  `));
+  `), CODEX_MAIN_TARGET);
 
   if (result?.ok) {
-    await delay(250);
+    await delay(350);
   }
   return result;
 }
@@ -231,10 +295,7 @@ const SEND_TARGETS = {
     id: 'codex',
     label: 'Codex',
     sendCommand: (text, options = {}) => {
-      const prefix = options.windowTitle
-        ? `OPENCLI_CDP_TARGET=${shellQuote(options.windowTitle)} `
-        : '';
-      return `${prefix}OPENCLI_CDP_ENDPOINT=${CODEX_CDP_ENDPOINT} opencli codex send ${shellQuote(text)}`;
+      return `OPENCLI_CDP_ENDPOINT=${CODEX_CDP_ENDPOINT} opencli codex send ${shellQuote(text)}`;
     },
     getBusyState: getCodexUiState,
     describeBusyState: describeCodexBusyState,
